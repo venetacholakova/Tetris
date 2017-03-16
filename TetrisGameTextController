@@ -1,0 +1,115 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/**
+ * TetrisGameTextController is the controller of Tetris game text version. It starts the game.
+ * It takes input from the user from command line and changes the model and the view accordingly. 
+ * The view reflects the state of the model - model is the logic of the game. 
+ *
+ * @author Veneta Cholakova
+ * @version 1
+ */
+
+public class TetrisGameTextController {
+	
+	//instances of TetrisGame and TetrisBoardTextView
+	private TetrisGame game;
+	private TetrisBoardTextView view;
+	
+	 /**
+	  * Constructor. Calls methods to create view and model. Reads input from user.
+	  */
+	 public TetrisGameTextController() {
+		game = new TetrisGame();
+		view = new TetrisBoardTextView(game.getTetrisBoard());
+		
+		//Read user's input
+		readInput();
+	 }
+	 
+	 /**
+	  * Read user's input.
+	  */
+	 private void readInput(){
+		// input stream: read input from user
+		BufferedReader in = new BufferedReader( new InputStreamReader( System.in ) );
+	  
+		// try/catch exception
+		try 
+		{
+			String line;
+	 
+			// loop until the user types "Quit"
+			do {
+				refreshDisplay();
+				System.out.println("Please enter a move (l,r,d,z,x) or type Quit to end."); 
+				line = in.readLine(); 
+				moveEntered( line );	
+
+				//Check if game is over because the top of board was reached
+				if(game.getTetrisBoard().isGameOver()) {
+					//Print lose statement
+					System.out.println("You lose!");
+
+					//Start new game
+					game = new TetrisGame();
+					view = new TetrisBoardTextView(game.getTetrisBoard());
+				}		
+
+			} while ( (!line.equals("Quit") ) );
+		}
+		catch ( IOException ioe )
+		{
+			// tell exception to print its error log
+			ioe.printStackTrace();
+		}
+	 }
+	 
+	 /**
+	  * Display scores and the board.
+	  */
+	 private void refreshDisplay(){
+			System.out.println("Number of lines cleared: " + game.getNumLines());	
+			System.out.println("Number of tetrises cleared: " + game.getNumTetrises());
+			System.out.println(view.getBoardString());
+	 }
+	 
+	 /**
+	  * Determine what move was attempted and call TetrisGame method to attempt it.
+	  * @param move the user input
+	  */
+	 private void moveEntered(String move){
+		 //Down
+		if(move.equals("d")){
+			game.attemptMove(TetrisGame.DOWN);
+		}
+		//Left
+		else if(move.equals("r")){
+			game.attemptMove(TetrisGame.RIGHT);
+		}
+		//Right
+		else if(move.equals("l")){
+			game.attemptMove(TetrisGame.LEFT);
+		}
+		//Clockwise
+		else if(move.equals("x")){
+			game.attemptMove(TetrisGame.CW);
+		}
+		//Counterclockwise
+		else if(move.equals("z")){
+			game.attemptMove(TetrisGame.CCW);
+		}
+				
+	 }
+	 
+	 /**
+	  * Call controller class to start the game.
+	  * @param args the input from the user
+   	  */
+	 public static void main(String[] args) {
+		// make a new controller instance
+		TetrisGameTextController myGame = new TetrisGameTextController();
+	 }
+
+}
