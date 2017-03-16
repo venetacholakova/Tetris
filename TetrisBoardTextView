@@ -1,0 +1,79 @@
+/**
+ * TetrisBoardTextVIew is the view for the text-only version of the game.
+ * It has a method that turns the boolean array representing board into 
+ * a String board to be printed.
+ *
+ * @author Veneta Cholakova
+ * @version 1
+ */
+
+public class TetrisBoardTextView {
+	
+	//instance of the board
+	private TetrisBoard board;
+	
+	/**
+	 * Constructor of the class. 
+	 * @param b the board passed 
+	 */
+	public TetrisBoardTextView(TetrisBoard b) {
+		this.board = b;
+	}
+	
+	/**
+	 * Return a String that shows the state of the game to be visualized
+	 * @return the board of the text version of the game
+	 */
+	public String getBoardString(){
+		//a String representing the board text version
+		String boardString = new String("");
+		
+		//walk through the array of booleans
+		for(int row = 0; row < board.getNumRows(); row++){
+			for(int col = 0; col < board.getNumCols(); col++){
+				
+				//If the board's location is occupied by a moving piece
+				int [] pieceCoords = board.getCurrPieceGridPos();
+				
+				//If we are within the range of tetris piece; the range of each piece is 4x4
+				if((pieceCoords[0] <= row)&&(row < pieceCoords[0]+4)  && 
+				   (pieceCoords[1]<= col)&&(col < pieceCoords[1]+4)){   
+					
+					//Determine the coordinates on the piece's grid (the smaller grid that is 4x4)
+					int onPieceGridRow = row - pieceCoords[0],
+						onPieceGridCol = col - pieceCoords[1];
+					
+					//Check within its grid if the values are true and display all its squares
+					if((board.getCurrentPiece()).isFilled((board.getCurrentPiece()).getPieceRotation(), onPieceGridRow, onPieceGridCol) == true){
+						boardString += "X";
+					}
+					else{
+						//if the location contains a block, add X
+						if(board.hasBlock(row, col)){
+							boardString += "X";
+						}
+						//if the location doesn't contain a block, add dash
+						else {
+							boardString += " ";
+						}
+					}
+				}
+				else{
+					//if the location contains a block, add X
+					if(board.hasBlock(row, col)){
+						boardString += "X";
+					}
+					//if the location doesn't contain a block, add dash
+					else {
+						boardString += " ";
+					}
+				}
+			}
+			//include a new line after walking through a whole row
+			boardString += "\n"; 
+		}
+		//return board string version
+		return boardString;
+	}
+
+}
